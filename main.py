@@ -23,6 +23,7 @@ async def run(command, input_file):
     elif command == "spread":
         print("Start processing financial statements\n\n")
         output_fp = f"out/{basename}_spreaded.csv"
+        print("Input Markdown file is  :", input_file)
         with open(input_file, "r") as ifile:
             inputmd = ifile.read()
 
@@ -39,7 +40,7 @@ async def run(command, input_file):
         print(spreaded_csv_text)
 
         with open(output_fp, "w") as output_file:
-            output_file.write(spreaded_csv_text)
+            output_file.write(spreaded_csv_text or "No data to write")
 
         classified_df, output_labeled_file, output_full_file = mmas_classify(
             pd.read_csv(StringIO(spreaded_csv_text))
@@ -74,16 +75,16 @@ async def run(command, input_file):
 import tiktoken
 
 if __name__ == "__main__":
-    with open(
-        # "out/PTTEP_Financial statement_TH_2567_Cut version_translated.md", "r"
-        "out/raw_res.txt",
-        "r",
-    ) as file:
-        a = len(tiktoken.encoding_for_model("gpt-4o-mini").encode(file.read()))
-        print(f"Spreading Input Tokens: {a}")
-    # if len(sys.argv) != 3:
-    #     print("Usage: python main.py <command> <input_file>")
-    # else:
-    #     command = sys.argv[1]
-    #     input_file = sys.argv[2]
-    #     asyncio.run(run(command, input_file))
+    # with open(
+    #     # "out/PTTEP_Financial statement_TH_2567_Cut version_translated.md", "r"
+    #     "out/raw_res.txt",
+    #     "r",
+    # ) as file:
+    #     a = len(tiktoken.encoding_for_model("gpt-4o-mini").encode(file.read()))
+    #     print(f"Spreading Input Tokens: {a}")
+    if len(sys.argv) != 3:
+        print("Usage: python main.py <command> <input_file>")
+    else:
+        command = sys.argv[1]
+        input_file = sys.argv[2]
+        asyncio.run(run(command, input_file))

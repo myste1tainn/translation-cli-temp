@@ -36,7 +36,7 @@ async def mmas_spread(inputmd):
     a = len(tiktoken.encoding_for_model("gpt-4o-mini").encode(res or ""))
     print(f"Spreading: {res}")
     print(f"Spreading Output Tokens: {a}")
-    return
+
     with open("out/raw_res.txt", "w") as file:
         file.write(res or "EMPTY")
 
