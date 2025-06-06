@@ -1,10 +1,16 @@
 import time
 import asyncio
 import csv
+from typing import Any
 from functools import wraps
 
 
-def track_time(fn=None, *, id=None):
+from typing import Callable, TypeVar
+
+T = TypeVar("T", bound=Callable[..., Any])
+
+
+def track_time(fn: T, *, id: str | None = None) -> T:
     if fn is None:
         return lambda fn: track_time(fn, id=id)
 

@@ -6,6 +6,9 @@ def excel_to_markdown(path, sheet_name=None):
     wb = load_workbook(path, data_only=True)
     ws = wb[sheet_name] if sheet_name else wb.active
 
+    if ws is None:
+        raise ValueError("No worksheet found. Please check the sheet name or the file.")
+
     # Find the max range
     max_row = ws.max_row
     max_col = ws.max_column

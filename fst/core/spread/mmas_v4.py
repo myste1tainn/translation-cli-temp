@@ -1,15 +1,12 @@
-from openai import NotGiven
-from openai.types.shared_params.response_format_text import ResponseFormatText
-import pandas as pd
-from aiclient import ai_chat
+from fst.ai.client import ai_chat
 import re
 
-from track_time import track_time
+from fst.utils.track_time import track_time
 import tiktoken
 
 
 @track_time
-async def mmas_spread(inputmd):
+async def mmas_spread(inputmd: str) -> str:
     with open("data/prompts/mmas-extraction-line-items-v4.txt", "r") as file:
         prompts = file.read()
 

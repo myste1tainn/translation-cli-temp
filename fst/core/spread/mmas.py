@@ -1,10 +1,6 @@
-from openai import NotGiven
-from openai.types.shared_params.response_format_text import ResponseFormatText
 import pandas as pd
-from aiclient import ai_chat
-import pprint
+from fst.ai.client import ai_chat
 import json
-import os
 
 
 def process_financial_statements():

@@ -1,7 +1,10 @@
 import os
+from openpyxl.worksheet.worksheet import Worksheet
 import pandas as pd
 import openpyxl
 from openpyxl.cell.cell import (
+    # This is probably wrong because using this causes a warning in the LSP everywhere
+    Cell,
     TYPE_STRING,
     TYPE_NUMERIC,
     TYPE_BOOL,
@@ -13,23 +16,24 @@ from googletrans import Translator
 import json
 import re
 import uuid
-from aiclient import ai_chat
-from jargon_list import jargon_list_str
+from typing import Any
+from fst.ai.client import ai_chat
+from fst.core.translate.jargon_list import jargon_list_str
 from markitdown import MarkItDown
 
 translator = Translator()
 
 usage_token = 0
 
-to_translate_words = []
-to_translate_cells = []
+to_translate_words: list[str] = []
+to_translate_cells: list[tuple[int, int]] = []
 
 
 # Generate a unique request ID
 request_id = str(uuid.uuid4())
 
 
-def gen_ai_translate_text(cell, value, company, is_merged):
+def gen_ai_translate_text(cell: Any, value: str, company: str, is_merged: bool) -> str:
     if (
         isinstance(value, str)
         and bool(re.fullmatch(r"[\d,.\-\s]+", value)) == False
@@ -54,7 +58,7 @@ def gen_ai_translate_text(cell, value, company, is_merged):
     return value
 
 
-def open_ai_translate_words(sheet, value, company):
+def open_ai_translate_words(sheet: Worksheet, value: list[str], company: str) -> None:
     response = ai_chat(
         [
             {
@@ -95,7 +99,8 @@ The response should be:
     )
 
     global usage_token
-    usage_token += response.usage.completion_tokens
+    if response.usage is not None:
+        usage_token += response.usage.completion_tokens
 
     json_response = response.choices[0].message.content
 
@@ -103,8 +108,10 @@ The response should be:
         return open_ai_translate_words(sheet, value, company)
 
     print(f"json_response: {json_response}")
-    response = json.loads(json_response)
-    result = response.get("translated_value")
+    json_object: dict[str, Any] = json.loads(json_response)
+    # Mark as Any for now, because don't know what type is expected
+    # on the line that says `cell.value = translated_value`
+    result: list[Any] = json_object.get("translated_value") or []
     print(f"translating {value}, translated {result}")
 
     global to_translate_cells
@@ -119,10 +126,10 @@ The response should be:
     to_translate_words = []
 
 
-def convert_be_to_ad_in_text(text):
+def convert_be_to_ad_in_text(text: str) -> str:
     """Find all B.E. years in the text and convert them to A.D."""
     # Find all B.E. years using regex
-    be_years = re.findall(r"\bพ\.ศ\.\s*(\d{4})\b", text, flags=re.IGNORECASE)
+    be_years: list[str] = re.findall(r"\bพ\.ศ\.\s*(\d{4})\b", text, flags=re.IGNORECASE)
 
     # Replace each B.E. year with its A.D. equivalent
     for be_year in be_years:
@@ -136,8 +143,13 @@ def convert_be_to_ad_in_text(text):
     return text
 
 
-def get_translated_text(cell, company, jargon_list_json, is_merged):
-    jargon_word = jargon_list_json.get(cell.value, None)
+def get_translated_text(
+    cell: Any,
+    company: str,
+    jargon_list_json: dict[str, str],
+    is_merged: bool,
+) -> str:
+    jargon_word: str | None = jargon_list_json.get(cell.value, None)
     if jargon_word != None:
         print(f"##### matched jargon word")
         translated_text = jargon_word
@@ -149,11 +161,11 @@ def get_translated_text(cell, company, jargon_list_json, is_merged):
     return translated_text
 
 
-async def translate(file_path, output_path, company):
+async def translate(file_path: str, output_path: str, company: str) -> tuple[str, str]:
     startTime = pd.Timestamp.now()
     print(f"##### Start time: {startTime}")
 
-    jargon_list_json = json.loads(jargon_list_str)
+    jargon_list_json: dict[str, str] = json.loads(jargon_list_str)
 
     wb = openpyxl.load_workbook(file_path)
     sheetCount = 0
@@ -187,17 +199,23 @@ async def translate(file_path, output_path, company):
                     cell.value = "Baht"
                     continue
                 elif cell.data_type == TYPE_STRING:
-                    if re.fullmatch(r"[0-9.,]+", cell.value):
+                    v = str(cell.value)
+                    if re.fullmatch(r"[0-9.,]+", v):
                         continue
-                    elif cell.value.startswith("พ.ศ."):
-                        cell.value = convert_be_to_ad_in_text(cell.value)
+                    elif v.startswith("พ.ศ."):
+                        cell.value = convert_be_to_ad_in_text(v)
                         continue
                 for merged_range in merged_ranges:
                     if cell.coordinate in merged_range:
                         print(
                             f"################## cells found in merged_ranges value is {cell.value}"
                         )
-                        top_left_cell = sheet[merged_range.start_cell.coordinate]
+
+                        # NOTE: The code below that accesses `coordinate` works just fine, but the LSP doesn't seem to recognize it.
+                        # force down cast to shut up the LSP warning
+                        from typing import cast
+
+                        top_left_cell: Any = sheet[merged_range.start_cell.coordinate]
                         print(f"################## top_left_cell {cell.value}")
                         print(
                             f"##########,####### {cell.coordinate},{top_left_cell.coordinate}"

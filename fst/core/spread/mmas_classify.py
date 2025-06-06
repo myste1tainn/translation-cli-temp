@@ -1,16 +1,16 @@
 import pandas as pd
+from pandas.core.api import DataFrame
 from pydantic import BaseModel, Field
-from aiclient import ai_chat
+from fst.ai.client import ai_chat
 import json
-import os
 import re
 
-from track_time import track_time
+from fst.utils.track_time import track_time
 import tiktoken
 
 
 @track_time
-def mmas_classify(df):
+def mmas_classify(df: DataFrame):
     df["id"] = df["Financial Item"].astype("category").cat.codes + 1
     new_df = df[["id", "Financial Item"]].copy()
     uniq_df = new_df.drop_duplicates(subset="id")

@@ -1,17 +1,16 @@
 from io import StringIO
-import time
 import asyncio
 import sys
-from mmas_v4 import mmas_spread
-from mmas_classify import mmas_classify
-from mmas_aggregate import mmas_aggregate
-from fs_translate import translate
+from fst.core.spread.mmas_v4 import mmas_spread
+from fst.core.spread.mmas_classify import mmas_classify
+from fst.core.spread.mmas_aggregate import mmas_aggregate
+from fst.core.translate.fs_translate import translate
 import pandas as pd
-from track_time import track_time
+from fst.utils.track_time import track_time
 
 
 @track_time
-async def run(command, input_file):
+async def _run(command: str, input_file: str):
     basename = input_file.rsplit("/", 1)[-1].rsplit(".", 1)[0]
     if command == "translate":
         print("Start converting\n\n")
@@ -74,7 +73,8 @@ async def run(command, input_file):
 
 import tiktoken
 
-if __name__ == "__main__":
+
+def run():
     # with open(
     #     # "out/PTTEP_Financial statement_TH_2567_Cut version_translated.md", "r"
     #     "out/raw_res.txt",
@@ -87,4 +87,4 @@ if __name__ == "__main__":
     else:
         command = sys.argv[1]
         input_file = sys.argv[2]
-        asyncio.run(run(command, input_file))
+        asyncio.run(_run(command, input_file))

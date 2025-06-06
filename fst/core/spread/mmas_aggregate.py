@@ -1,7 +1,7 @@
-import pandas as pd
+from pandas import DataFrame
 
 
-def mmas_aggregate(df, groupby):
+def mmas_aggregate(df: DataFrame, groupby: str):
     """
     Reads an input file into a DataFrame, adjusts the 'Value' column by the 'Scale' column,
     and aggregates it based on 'mmas_group' and 'mmas_item', summing the adjusted 'Value' column.

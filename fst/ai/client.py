@@ -1,7 +1,10 @@
 import os
 import pprint
 from openai import AzureOpenAI
+from openai.types.chat import ChatCompletion
 from openai.types.chat.completion_create_params import ResponseFormat
+from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
+
 
 endpoint = os.getenv("ENDPOINT_URL", "https://llm-platform-gateway.azure-api.net")
 deployment = os.getenv(
@@ -23,13 +26,13 @@ def get_ai_client():
 
 
 def ai_chat(
-    messages: list,
+    messages: list[ChatCompletionMessageParam],
     response_format: ResponseFormat = {"type": "json_object"},
-    max_completion_tokens=1000,
+    max_completion_tokens: int = 1000,
     debug: bool = False,
-):
+) -> ChatCompletion:
     if debug:
-        content = messages[0]["content"]
+        content = messages[0].get("content")
         pprint.pprint(f"Prompt message is:\n{content}")
     return get_ai_client().chat.completions.create(
         model=deployment,
@@ -45,13 +48,13 @@ def ai_chat(
 
 
 def ai_chat_parse(
-    messages: list,
+    messages: list[ChatCompletionMessageParam],
     response_format: type[object],
-    max_completion_tokens=1000,
+    max_completion_tokens: int = 1000,
     debug: bool = False,
 ):
     if debug:
-        content = messages[0]["content"]
+        content = messages[0].get("content")
         pprint.pprint(f"Prompt message is:\n{content}")
     return get_ai_client().beta.chat.completions.parse(
         model=deployment,

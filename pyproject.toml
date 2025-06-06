@@ -12,15 +12,22 @@ openpyxl = "*"
 pandas = "*"
 tiktoken = "*"
 asyncio = "*"
+googletrans = "*"
+openai = "*"
+markitdown = "*"
 
 # Custom modules (ensure these are structured within your project).
-fs_translate = {path = "./fs_translate"}
-mmas_v4 = {path = "./mmas_v4"}
-mmas_classify = {path = "./mmas_classify"}
-mmas_aggregate = {path = "./mmas_aggregate"}
+# fs_translate = {path = "./fs_translate"}
+# mmas_v4 = {path = "./mmas_v4"}
+# mmas_classify = {path = "./mmas_classify"}
+# mmas_aggregate = {path = "./mmas_aggregate"}
+
+[tool.poetry.group.dev.dependencies]
+pandas-stubs = "*"
+types-openpyxl = "*"
 
 [tool.poetry.scripts]
-fst = "fst.cli:main"
+fst = "fst.cli.main:run"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
