@@ -198,7 +198,7 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
                 elif cell.value == "บาท":
                     cell.value = "Baht"
                     continue
-                elif cell.data_type == TYPE_STRING:
+                elif cell.data_type == TYPE_STRING and isinstance(cell.value, str):
                     v = str(cell.value)
                     if re.fullmatch(r"[0-9.,]+", v):
                         continue

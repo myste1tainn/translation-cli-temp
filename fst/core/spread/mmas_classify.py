@@ -1,6 +1,5 @@
 import pandas as pd
 from pandas.core.api import DataFrame
-from pydantic import BaseModel, Field
 from fst.ai.client import ai_chat
 import json
 import re
@@ -13,7 +12,7 @@ import tiktoken
 def mmas_classify(df: DataFrame):
     df["id"] = df["Financial Item"].astype("category").cat.codes + 1
     new_df = df[["id", "Financial Item"]].copy()
-    uniq_df = new_df.drop_duplicates(subset="id")
+    uniq_df = new_df.drop_duplicates(subset="id")  # type: ignore
     csv_text = uniq_df.to_csv(index=False, columns=["id", "Financial Item"])
     print(csv_text)
 

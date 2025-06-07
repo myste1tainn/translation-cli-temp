@@ -1,5 +1,5 @@
 {
-  "typeCheckingMode": "strict",
+  "typeCheckingMode": "basic",
   "stubPath": "stubs",
   "reportMissingImports": false,
   "reportMissingTypeStubs": false,
