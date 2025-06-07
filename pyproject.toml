@@ -25,6 +25,7 @@ markitdown = "*"
 [tool.poetry.group.dev.dependencies]
 pandas-stubs = "*"
 types-openpyxl = "*"
+mypy = "^1.16.0"
 
 [tool.poetry.scripts]
 fst = "fst.cli.main:run"

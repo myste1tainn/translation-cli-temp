@@ -1,0 +1,7 @@
+{
+  "typeCheckingMode": "strict",
+  "stubPath": "stubs",
+  "reportMissingImports": false,
+  "reportMissingTypeStubs": false,
+  "reportMissingModuleSource": false
+}

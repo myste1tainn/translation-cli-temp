@@ -27,7 +27,7 @@ async def mmas_spread(inputmd: str) -> str:
             }
         ],
         response_format={"type": "text"},
-        max_completion_tokens=8000,
+        max_completion_tokens=10000,
     )
     res = response.choices[0].message.content
     a = len(tiktoken.encoding_for_model("gpt-4o-mini").encode(res or ""))
