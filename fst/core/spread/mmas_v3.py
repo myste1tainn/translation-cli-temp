@@ -10,7 +10,7 @@ def process_financial_statements():
     )
 
     # Load the original workbook to retain styles
-    original_wb = load_workbook("PTTEP_FINANCIAL_STATEMENTS_EN_Cut version.xlsx")
+    # original_wb = load_workbook("PTTEP_FINANCIAL_STATEMENTS_EN_Cut version.xlsx")
 
     # Create a new workbook to save the modified data
     modified_wb = load_workbook("PTTEP_FINANCIAL_STATEMENTS_EN_Cut version.xlsx")
@@ -29,7 +29,7 @@ def process_financial_statements():
         financial_data.insert(1, "Modified Column 0", modified_values_series)
 
         # Get the original and modified worksheets
-        original_ws = original_wb[sheet_name]
+        # original_ws = original_wb[sheet_name]
         modified_ws = modified_wb[sheet_name]
 
         # Clear the existing data in the modified worksheet

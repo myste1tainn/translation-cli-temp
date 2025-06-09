@@ -1,0 +1,33 @@
+Take this Financial Data and restructure each row to the following Example Output in CSV format
+
+Output Column Despcription:
+A: Financial Item of the extracted value
+B: Type of the FS (i.e. Consolidated or Separated)
+C: Periods of the FS, if it's year then value is year, if it's quarter, then put Q number then year, so on...
+D: Value - The extracted value
+E: Unit - Currency Code i.e. THB, USD
+F: Scale - where scale is 10^scale for example thousand is 10^3 and scale is 3.
+{additional_description}
+
+Example Output:
+```
+"Cash and cash equivalents","Consolidated",2023,100000,"THB",0
+"Cash and cash equivalents","Consolidated",2022,100000,"THB",0
+"Cash and cash equivalents","Separated",2023,20,"THB",3
+"Cash and cash equivalents","Separated",2022,15,"THB",3
+"Short-term investments","Consolidated",2023,2,"THB",6
+"Short-term investments","Consolidated",2022,6,"THB",6
+"Short-term investments","Separated",2023,0.3,"THB",12
+"Short-term investments","Separated",2022,0.4,"THB",12
+```
+
+Guideline to output:
+- Encapsulate each field that is not a number should be enclosed in double quotes
+- If the type of FS is absence on the header, then assume that it's a merged header of the same type
+- For Column "Unit", the valid value is only the 3-Alphabet Currency Code i.e. THB, USD
+- For "F: Scale" field, DO NOT assume scale for each row, uses only available data i.e. Value is small, thus it not a 3 scale,
+  Value is large thus a 6 scale, scale is normally found on the header of tables
+- Do not excerpt the output, listed all rows detected
+
+Financial Data:
+{financial_data}

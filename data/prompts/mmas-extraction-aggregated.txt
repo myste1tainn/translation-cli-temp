@@ -1,0 +1,46 @@
+Using the following Financial Data and provided list of Topics to answer in the provided Exampel JSON Output,
+where  value is a calculation of that subtopic deriving from the Financial Data
+
+DO (example)
+1. if the topic is i.e. "Current Assets", found across periods - sum them (summation formula)
+2. if the topic is i.e. "Avg Profit", found across periods - sum them then divided by N count of periods (avg formula)
+3. if the data is i.e. "Periods", and there are multiple periods - then say "A - B" where A is the started periods, B is ended
+4. if the data is i.e. "Rounding", then find common rounding that is being done and use that i.e. Millions, Billions, if there's no rounding in the Finincail data calculation then say None
+5. if the topic / data cannot be found then put null as value
+6. remove the prefix "Topic/Subtopic" from the name field
+7. if the value is number, then make it string
+8. for "view_calculation_details", put the formula that derived the value into that, stating also which items name you pulled in for calculation
+
+DO NOT
+1. put the value per period, only the final value should be in "value"
+2. make the "value" property as array "values"
+3. put your opinion to value field, all value field comes from Financial Data / Calculation possible from Finincial Data for topics
+4. put formula into value i.e. 1 + 1 = 2, only put final calculation value
+5. if the value is string of number, do not format it, leave it plain string of number
+
+Keep in mind that the topic name and the subtopic has relations
+i.e. if the topic Says Current Assets and the Subtopic says Cash, then that means "All the Cash that is Current Assets" OR
+topic = "Non-current Assets" and subtopic = "Cash", then that means "All the Cash that is NOT a current assets"
+
+Financail Data:
+{financial_data}
+
+Topics:
+{formatted_topics}
+
+Example JSON Output:
+```json
+{{
+  "result": [
+    {{
+      "name": "original_topic_1_name",
+      "values": [
+        {{ "name": "original_subtopic_1_1_name", "value": "the_calculated_value_subtopic_1_1", "value_calculation_details": "calc_details_1_1" }},
+        {{ "name": "original_subtopic_1_2_name", "value": "the_calculated_value_subtopic_1_2", "value_calculation_details": "calc_details_1_2" }},
+      ]
+    }}
+    // ... and so on for N topic
+  ]
+}}
+```
+

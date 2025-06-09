@@ -4,6 +4,8 @@ import re
 from fst.utils.track_time import track_time
 import tiktoken
 
+debug = False
+
 
 @track_time
 async def mmas_spread(inputmd: str) -> str:
@@ -28,10 +30,12 @@ async def mmas_spread(inputmd: str) -> str:
         ],
         response_format={"type": "text"},
         max_completion_tokens=10000,
+        debug=debug,
     )
     res = response.choices[0].message.content
     a = len(tiktoken.encoding_for_model("gpt-4o-mini").encode(res or ""))
-    print(f"Spreading: {res}")
+    if debug:
+        print(f"Spreading: {res}")
     print(f"Spreading Output Tokens: {a}")
 
     with open("out/raw_res.txt", "w") as file:

@@ -1,0 +1,13 @@
+|Type Name|Category|Suggested Input Account Category|
+|---------|--------|--------------------------------|
+|Inventory - (Well, Oil, Field)|Current Assets|Inventory|
+|Exploration Assets|Non-current Assets|Other Depreciable Fixed Assets|
+|Accounts Payable - Royalties|Current Liabilities|Accounts Payable-Trade|
+|Exploration & Production Revenue|Sales/Revenues|Sales/Revenues|
+|Non-Exploration & Production Revenue (e.g. midstream, downstream, etc)|Sales/Revenues|Sales/Revenues|
+|Crude Oil Revenue|Sales/Revenues|Sales/Revenues|
+|Natural Gas Revenue|Sales/Revenues|Sales/Revenues|
+|Oil and Gas Royalties|Sales/Revenues|Sales/Revenues|
+|Production Tax|Cost of Sales|Cost of Sales|
+|Dry Hole Expense|Operating Expense|Other Operating Expense|
+|Abandonment Costs|Operating Expense|Other Operating Expense|

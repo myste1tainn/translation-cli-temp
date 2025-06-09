@@ -1,0 +1,49 @@
+Using the following Financial Data and provided list of Topics to answer in the provided Exampel Output,
+where value is a calculation of that subtopic deriving from the Financial Data.
+
+DO (example)
+- if the data is i.e. "Periods", and there are multiple periods - then say "A - B" where A is the started periods, B is ended
+- if the data is i.e. "Rounding", then find common rounding that is being done and use that i.e. Millions, Billions, if there's no rounding in the Finincail data calculation then say None
+- if the topic / data cannot be found then do not include it as part of the output
+- remove the prefix "Topic/Subtopic" from the name field
+- if the value is number, then make it string
+- for those that the data cannot be found, do not include it as part of the output
+- list all topics & subtopic
+- foreach topic + subtopic must have same number of rows per dimensions found in the data i.e. Consolidated + Separated and
+  year 2023 and 2022 then foreach topic + subtopic must have 4 rows (2x2 dimensions)
+- If the information does not indicate differenc between Consolidated / Separated type, then just use one that exists
+  If there are no indication at all, assum Consolidated type
+
+DO NOT
+- put the value per period, only the final value should be in "value"
+- make the "value" property as array "values"
+- put your opinion to value field, all value field comes from Financial Data / Calculation possible from Finincial Data for topics
+- if the value is string of number, do not format it, leave it plain string of number
+- split the answer into serveral sections of backticks area, use just one area and do not put empty line between topics / subtopics
+
+NOTE:
+1. The provided Mappings is a guideline to map information from Financial Data Attribute to Topic - Subtopic
+2. If you find Unit related to other currency than THB, then leave it out of the calculation, use the THB one only
+
+Financail Data:
+{financial_data}
+
+Mappings:
+{mmas_mappings}
+
+Topics:
+{formatted_topics}
+
+CSV Columns Description:
+A: Topic Name
+B: Subtopic Name
+C: Type of the FS (i.e. Consolidated or Separated)
+D: Periods of the FS, if it's year then value is year, if it's quarter, then put Q number then year, so on...
+E: Value
+F: Original attribute name
+
+Example Output:
+"Current Assets","Cash","Consolidated","2023",10000,"Cash and cash equivalents"
+"Current Assets","Cash","Consolidated","2022",102349,"Short-term investments"
+"Current Assets","Cash","Separated","2023",239,"Inventories"
+"Current Assets","Cash","Separated","2022",192,"Current tax assets"

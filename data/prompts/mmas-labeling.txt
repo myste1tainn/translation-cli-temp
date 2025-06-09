@@ -1,0 +1,40 @@
+For the provided input, give be back JSON response strictly follows the example output schema
+
+Example JSON Output:
+```json
+{{
+  "results": [
+    {{
+      "id": 1,
+      "mmas_group": "Current Assets",
+      "mmas_item": "Cash",
+      "justification": "__justification_to_provided_mmas_group_and_item__"
+    }}
+  ]
+}}
+```
+
+Guideline to processing:
+- The JSON output
+  - Field "id" is the original ID found from input
+  - Field "mmas_group" should be taken from provided MMAS group by matching up definition with Financial Group & Item
+  - Field "mmas_item" should be taken from provided MMAS group by matching up definition with Financial Group & ItemA
+  - Field "justification" stating what is the reason of the classification of MMAS group and item here
+- MMAS group list: A table of markdown consist of the following property
+  - Group: group name of the MMAS
+  - Item: item name of the MMAS
+  - Definition: Descriptive meaning of the respective group & item to be used for reasoning for classification
+- MMAS group Industry specific terms: A table of markdown telling industry specific classification of the MMAS
+  - Type Name: The keyword that could be found in the Input
+  - Category: MMAS group name, supposedly should be matched with MMAS group list
+  - Suggested Input Account: MMAS item name, supposedly should be matched with MMAS group list
+
+
+MMAS group list:
+{mmas_group_defn}
+
+MMAS group Industry specific terms:
+{mmas_industry_defn}
+
+Input:
+{input}

@@ -4,7 +4,7 @@ import pandas as pd
 import openpyxl
 from openpyxl.cell.cell import (
     # This is probably wrong because using this causes a warning in the LSP everywhere
-    Cell,
+    # Cell,
     TYPE_STRING,
     TYPE_NUMERIC,
     TYPE_BOOL,
@@ -32,8 +32,15 @@ to_translate_cells: list[tuple[int, int]] = []
 # Generate a unique request ID
 request_id = str(uuid.uuid4())
 
+fs_translate_debug = False
 
-def gen_ai_translate_text(cell: Any, value: str, company: str, is_merged: bool) -> str:
+
+def gen_ai_translate_text(
+    cell: Any,
+    value: str,
+    _: str,  # This is the company name for context in translation, commented out becaus it's not in used right now
+    is_merged: bool,
+) -> str:
     if (
         isinstance(value, str)
         and bool(re.fullmatch(r"[\d,.\-\s]+", value)) == False
@@ -107,12 +114,12 @@ The response should be:
     if json_response is None:
         return open_ai_translate_words(sheet, value, company)
 
-    print(f"json_response: {json_response}")
+    _print(f"json_response: {json_response}")
     json_object: dict[str, Any] = json.loads(json_response)
     # Mark as Any for now, because don't know what type is expected
     # on the line that says `cell.value = translated_value`
     result: list[Any] = json_object.get("translated_value") or []
-    print(f"translating {value}, translated {result}")
+    _print(f"translating {value}, translated {result}")
 
     global to_translate_cells
     global to_translate_words
@@ -151,19 +158,19 @@ def get_translated_text(
 ) -> str:
     jargon_word: str | None = jargon_list_json.get(cell.value, None)
     if jargon_word != None:
-        print(f"##### matched jargon word")
+        _print(f"##### matched jargon word")
         translated_text = jargon_word
     else:
-        print(f"##### matched jargon word, try with AI")
+        _print(f"##### matched jargon word, try with AI")
         translated_text = gen_ai_translate_text(cell, cell.value, company, is_merged)
 
-    print(f"##### translated_text {jargon_word}")
+    _print(f"##### translated_text {jargon_word}")
     return translated_text
 
 
 async def translate(file_path: str, output_path: str, company: str) -> tuple[str, str]:
     startTime = pd.Timestamp.now()
-    print(f"##### Start time: {startTime}")
+    _print(f"##### Start time: {startTime}")
 
     jargon_list_json: dict[str, str] = json.loads(jargon_list_str)
 
@@ -172,7 +179,7 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
     for sheet in wb.worksheets:
         sheetCount = sheetCount + 1
 
-        print(f"================= Sheet {sheetCount}: {sheet} | {sheet.sheet_state} ")
+        _print(f"================= Sheet {sheetCount}: {sheet} | {sheet.sheet_state} ")
 
         if sheet.sheet_state == sheet.SHEETSTATE_HIDDEN:
             continue
@@ -180,7 +187,7 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
         merged_ranges = sheet.merged_cells.ranges
         i = 0
         for row in sheet.iter_rows():
-            print(f"Row no: {i}")
+            _print(f"Row no: {i}")
             i = i + 1
             for cell in row:
                 # Skip if the cell contains a formula
@@ -207,17 +214,17 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
                         continue
                 for merged_range in merged_ranges:
                     if cell.coordinate in merged_range:
-                        print(
+                        _print(
                             f"################## cells found in merged_ranges value is {cell.value}"
                         )
 
                         # NOTE: The code below that accesses `coordinate` works just fine, but the LSP doesn't seem to recognize it.
                         # force down cast to shut up the LSP warning
-                        from typing import cast
+                        # from typing import cast
 
                         top_left_cell: Any = sheet[merged_range.start_cell.coordinate]
-                        print(f"################## top_left_cell {cell.value}")
-                        print(
+                        _print(f"################## top_left_cell {cell.value}")
+                        _print(
                             f"##########,####### {cell.coordinate},{top_left_cell.coordinate}"
                         )
                         if cell.coordinate == top_left_cell.coordinate and isinstance(
@@ -226,10 +233,10 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
                             cell.value = get_translated_text(
                                 cell, company, jargon_list_json, True
                             )
-                            print(f"################## translated text = {cell.value}")
+                            _print(f"################## translated text = {cell.value}")
                         break
                 else:
-                    print("normal")
+                    _print("normal")
                     cell.value = get_translated_text(
                         cell, company, jargon_list_json, False
                     )
@@ -243,6 +250,12 @@ async def translate(file_path: str, output_path: str, company: str) -> tuple[str
         file.write(md.text_content)
 
     endTime = pd.Timestamp.now()
-    print(f"##### End time: {endTime}")
-    print(f"######### Total time: {endTime - startTime} | Total token: {usage_token}")
+    _print(f"##### End time: {endTime}")
+    _print(f"######### Total time: {endTime - startTime} | Total token: {usage_token}")
     return md_path, output_path
+
+
+def _print(text: str) -> None:
+    if not fs_translate_debug:
+        return
+    print(text)

@@ -7,6 +7,8 @@ import re
 from fst.utils.track_time import track_time
 import tiktoken
 
+debug = False
+
 
 @track_time
 def mmas_classify(df: DataFrame):
@@ -14,7 +16,8 @@ def mmas_classify(df: DataFrame):
     new_df = df[["id", "Financial Item"]].copy()
     uniq_df = new_df.drop_duplicates(subset="id")  # type: ignore
     csv_text = uniq_df.to_csv(index=False, columns=["id", "Financial Item"])
-    print(csv_text)
+    if debug:
+        print(csv_text)
 
     with open("data/prompts/mmas-labeling-mmas-list.txt", "r") as file:
         prompts = file.read()
@@ -101,19 +104,25 @@ def mmas_classify(df: DataFrame):
         file.write(res or "")
 
     merged_labeled_df = pd.merge(
-        uniq_df.drop(columns=["Financial Item"]),
+        uniq_df.drop(
+            columns=[
+                "Financial Item"
+            ]  # the column is being dropped because it is duplicated in the labeled_df
+        ),
         labeled_df,
         on="id",
         how="inner",
     )
-    print("############################# merged_labeled_df")
-    print(merged_labeled_df)
+    if debug:
+        print("############################# merged_labeled_df")
+        print(merged_labeled_df)
 
     full_merged_df = pd.merge(df, merged_labeled_df, on="id", how="left")
-    print("############################# full_merged_df")
-    print(full_merged_df)
+    if debug:
+        print("############################# full_merged_df")
+        print(full_merged_df)
 
-    output_full_file = "classified_full.csv"
+    output_full_file = "out/classified_full.csv"
     with open(output_full_file, "w") as file:
         file.write(full_merged_df.to_csv(index=False))
 

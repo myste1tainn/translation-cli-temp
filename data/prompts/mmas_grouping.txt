@@ -1,0 +1,25 @@
+From the provided Values, categorize each value into the provided groups
+using Mappings as the whole list of category, and using Definition as a guidline
+for each of the category, answer back as per example where First column is original wording from Values
+Second column is the categorization you made
+
+Put out only the answer while retaining row/column relation, as the Output
+will be transformed back into array and reapply back to the data source the,
+the index needs to be maintained
+
+if the catergorization cannot be made then leave it as empty line
+
+Values:
+{values}
+
+Mappings:
+{mmas_template}
+
+Definition:
+{mmas_mappings}
+
+Example Output:
+Cash and cash equivalents,Cash
+Short-term invesments,Cash
+Trade and other current receivables,Timed Deposits
+Other current assets,Marketable Securities
