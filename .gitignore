@@ -1,10 +1,12 @@
 __pycache__/
+out/
+venv/
 .DS_Store
 *.xlsx
 *.docx
 *.csv
 *.json
 *.txt
-venv/
 !pyrightconfig.json
 !data/**/*
+data/.DS_Store
