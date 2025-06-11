@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  fst:
+    build: .
+    volumes:
+      # Mount the data directory for input files
+      - ./data:/app/data
+      # Mount the output directory for generated files
+      - ./out:/app/out
+    environment:
+      # Add any environment variables needed for the application
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    # The command can be overridden when running docker-compose
+    command: ["--help"]
